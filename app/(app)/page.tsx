@@ -14,6 +14,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DeviceCard } from "@/components/wifi/device-card";
 import {
   MetricTile,
   SectionHeader,
@@ -26,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { getStatusLabel } from "@/lib/types";
 import { useWifiNetworkStore } from "@/lib/wifi";
 import { getConnectedWifiLabel, getWifiAccessExplanation } from "@/lib/wifi/ui";
+import { getDeviceInsightSummary, useDeviceDiscoveryStore } from "@/lib/devices";
 
 function average(values: number[]) {
   if (values.length === 0) {
@@ -45,12 +47,23 @@ export default function HomePage() {
   const wifiError = useWifiNetworkStore((state) => state.error);
   const isWifiLoading = useWifiNetworkStore((state) => state.isLoading);
   const refreshWifiSnapshot = useWifiNetworkStore((state) => state.refreshWifiSnapshot);
+  const deviceSupport = useDeviceDiscoveryStore((state) => state.support);
+  const discoveredDevices = useDeviceDiscoveryStore((state) => state.devices);
+  const deviceSummary = useDeviceDiscoveryStore((state) => state.summary);
+  const devicesLastScannedAt = useDeviceDiscoveryStore((state) => state.lastScannedAt);
+  const refreshDevices = useDeviceDiscoveryStore((state) => state.refreshDevices);
 
   useEffect(() => {
     if (!lastScannedAt || Date.now() - lastScannedAt > 30_000) {
       void refreshWifiSnapshot();
     }
   }, [lastScannedAt, refreshWifiSnapshot]);
+
+  useEffect(() => {
+    if (!devicesLastScannedAt || Date.now() - devicesLastScannedAt > 60_000) {
+      void refreshDevices().catch(() => {});
+    }
+  }, [devicesLastScannedAt, refreshDevices]);
 
   const latestScanMetrics = latestScan
     ? {
@@ -308,6 +321,43 @@ export default function HomePage() {
             <Link href={rooms.length > 0 ? "/scan" : "/rooms"}>
               {rooms.length > 0 ? "Start Scan" : "Add Rooms"}
             </Link>
+          </Button>
+        </div>
+      </SurfaceCard>
+
+      <SurfaceCard className="p-5">
+        <SectionHeader
+          title="Devices"
+          subtitle={
+            deviceSupport?.canDiscoverDevices && discoveredDevices.length > 0
+              ? getDeviceInsightSummary(discoveredDevices)
+              : "Device discovery unavailable on web. Available in supported app modes later."
+          }
+          className="mb-4"
+        />
+
+        {deviceSupport?.canDiscoverDevices && discoveredDevices.length > 0 ? (
+          <div className="space-y-3">
+            <div className="grid grid-cols-3 gap-3">
+              <MetricTile icon={Wifi} label="Devices" value={deviceSummary.totalDevices} />
+              <MetricTile icon={MapPin} label="Weak" value={deviceSummary.weakDevices} />
+              <MetricTile icon={Clock3} label="Latency" value={deviceSummary.highLatencyDevices} />
+            </div>
+            <DeviceCard device={discoveredDevices[0]} compact />
+          </div>
+        ) : (
+          <div className="surface-subtle hairline rounded-[24px] px-4 py-4">
+            <p className="text-sm font-medium text-foreground">Not available in browser mode</p>
+            <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+              {deviceSupport?.reason ??
+                "You can still scan your rooms and improve your home WiFi from this web app."}
+            </p>
+          </div>
+        )}
+
+        <div className="mt-4">
+          <Button asChild variant="outline" className="w-full min-h-[48px] font-semibold">
+            <Link href="/devices">View Devices</Link>
           </Button>
         </div>
       </SurfaceCard>

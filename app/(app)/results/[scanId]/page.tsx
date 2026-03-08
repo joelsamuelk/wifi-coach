@@ -1,6 +1,7 @@
 "use client";
 
 import { use } from "react";
+import { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
@@ -14,12 +15,14 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { DeviceCard } from "@/components/wifi/device-card";
 import { EmptyState, SectionHeader, SurfaceCard } from "@/components/wifi/app-primitives";
 import { ProgressRing } from "@/components/wifi/progress-ring";
 import { ScoreBadge } from "@/components/wifi/score-badge";
 import { InlineAlert } from "@/components/wifi/inline-alert";
 import { useRoomsStore, useScanStore } from "@/lib/stores";
 import { cn } from "@/lib/utils";
+import { getDeviceInsightSummary, useDeviceDiscoveryStore } from "@/lib/devices";
 
 export default function ResultsPage({
   params,
@@ -30,6 +33,10 @@ export default function ResultsPage({
   const router = useRouter();
   const scans = useScanStore((state) => state.scans);
   const rooms = useRoomsStore((state) => state.rooms);
+  const deviceSupport = useDeviceDiscoveryStore((state) => state.support);
+  const devices = useDeviceDiscoveryStore((state) => state.devices);
+  const devicesLastScannedAt = useDeviceDiscoveryStore((state) => state.lastScannedAt);
+  const refreshDevices = useDeviceDiscoveryStore((state) => state.refreshDevices);
 
   const scanIndex = scans.findIndex((scan) => scan.id === scanId);
   const scan = scanIndex >= 0 ? scans[scanIndex] : null;
@@ -52,6 +59,19 @@ export default function ResultsPage({
 
   const scoreDelta = previousScan ? scan.homeScore - previousScan.homeScore : null;
   const weakRooms = scan.roomResults.filter((result) => result.label === "Weak");
+  const priorityDevices = useMemo(
+    () =>
+      devices
+        .filter((device) => device.signalLabel === "weak" || (device.latencyMs ?? 0) > 80)
+        .slice(0, 2),
+    [devices],
+  );
+
+  useEffect(() => {
+    if (!devicesLastScannedAt || Date.now() - devicesLastScannedAt > 60_000) {
+      void refreshDevices().catch(() => {});
+    }
+  }, [devicesLastScannedAt, refreshDevices]);
 
   return (
     <div className="flex flex-col gap-5 pb-1">
@@ -118,6 +138,26 @@ export default function ResultsPage({
               ? `Your home score dropped by ${Math.abs(scoreDelta)} points compared with the previous scan.`
               : "Your home score is about the same as the previous scan."}
         </InlineAlert>
+      ) : null}
+
+      {deviceSupport?.canDiscoverDevices && devices.length > 0 ? (
+        <SurfaceCard className="p-5">
+          <SectionHeader
+            title="Device insights"
+            subtitle={getDeviceInsightSummary(devices)}
+            action={
+              <Button asChild variant="outline" size="sm">
+                <Link href="/devices">View Devices</Link>
+              </Button>
+            }
+            className="mb-4"
+          />
+          <div className="space-y-3">
+            {(priorityDevices.length > 0 ? priorityDevices : devices.slice(0, 2)).map((device) => (
+              <DeviceCard key={device.id} device={device} compact />
+            ))}
+          </div>
+        </SurfaceCard>
       ) : null}
 
       <SurfaceCard className="p-5">
