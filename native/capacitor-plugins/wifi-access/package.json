@@ -1,0 +1,14 @@
+{
+  "name": "@wifi-coach/capacitor-wifi-access",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Capacitor Wi-Fi access plugin scaffold for WiFi Coach",
+  "capacitor": {
+    "ios": {
+      "src": "ios"
+    },
+    "android": {
+      "src": "android"
+    }
+  }
+}
