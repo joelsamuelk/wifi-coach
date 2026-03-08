@@ -45,7 +45,7 @@ const SAMPLE_STAGES = [
   "Checking latency",
   "Measuring download speed",
   "Measuring upload speed",
-  "Analysing room coverage",
+  "Estimating room coverage",
 ];
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -190,7 +190,7 @@ export default function ScanRunPage() {
         </button>
         <div className="text-center">
           <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-            Guided Scan
+            Estimated Room Check
           </p>
           <p className="text-base font-semibold tracking-tight text-foreground">
             Room {Math.min(flow.currentRoomIndex + 1, flow.roomIds.length)} of {flow.roomIds.length}
@@ -229,22 +229,25 @@ export default function ScanRunPage() {
             <WifiSignalIllustration className="w-36 h-36 animate-float" />
             <div>
               <h1 className="mb-2 text-[30px] font-bold tracking-tight text-foreground">
-                Ready to Scan
+                Ready to Check
               </h1>
               <p className="max-w-[18rem] text-sm leading-6 text-muted-foreground">
-                WiFi Coach will guide you through each selected room and explain the results in
-                plain English.
+                WiFi Coach will estimate each room using browser speed tests and explain the
+                results in plain English.
               </p>
             </div>
             <SurfaceCard className="w-full p-5 text-left">
               <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-                Network name
+                Web estimate
               </p>
               <p className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
                 {flow.networkName}
               </p>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {flow.mode} mode • {samplesNeeded} sample{samplesNeeded === 1 ? "" : "s"} per room
+              </p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                This web app cannot read direct Wi-Fi signal strength on your device.
               </p>
             </SurfaceCard>
             <Button
@@ -267,7 +270,7 @@ export default function ScanRunPage() {
                 Go to {currentRoom.name}
               </h2>
               <p className="text-sm leading-6 text-muted-foreground">
-                Stand where you normally use WiFi in this room.
+                Stand where you normally use WiFi so we can estimate this room from browser tests.
               </p>
             </div>
             <SurfaceCard className="w-full p-5 text-left">
@@ -332,6 +335,7 @@ export default function ScanRunPage() {
               </div>
               <p className="mt-2 text-left text-sm leading-6 text-muted-foreground">
                 This takes about {flow.mode === "Quick" ? "20 seconds" : "20 seconds per sample"}.
+                The result is an estimate from this browser, not a direct signal reading.
               </p>
               <div className="mt-5 space-y-3">
                 {SAMPLE_STAGES.map((label, index) => (
@@ -404,7 +408,7 @@ export default function ScanRunPage() {
                 />
                 <div className="text-left">
                   <p className="mb-1 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
-                    Room score
+                    Estimated room score
                   </p>
                   <p
                     className={cn(
@@ -464,7 +468,7 @@ export default function ScanRunPage() {
               onClick={flow.nextRoom}
               className="w-full min-h-[56px] text-base font-semibold"
             >
-              {flow.currentRoomIndex + 1 >= flow.roomIds.length ? "Finish Scan" : "Next Room"}
+              {flow.currentRoomIndex + 1 >= flow.roomIds.length ? "Finish Check" : "Next Room"}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -475,11 +479,11 @@ export default function ScanRunPage() {
             <SuccessIllustration className="w-32 h-32" />
             <div>
               <h2 className="mb-2 text-[30px] font-bold tracking-tight text-foreground">
-                Scan Complete
+                Room Check Complete
               </h2>
               <p className="max-w-[18rem] text-sm leading-6 text-muted-foreground">
-                All selected rooms were tested. View your results to see what is wrong, why it is
-                happening, and what to do next.
+                All selected rooms were estimated. View your results to see what is wrong, why it
+                may be happening, and what to do next.
               </p>
             </div>
             <div className="w-full grid grid-cols-3 gap-2.5">
@@ -516,14 +520,14 @@ export default function ScanRunPage() {
       <AlertDialog open={confirmCancel} onOpenChange={setConfirmCancel}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel this scan?</AlertDialogTitle>
+            <AlertDialogTitle>Cancel this room check?</AlertDialogTitle>
             <AlertDialogDescription>
               Your current room progress will be lost. Saved scans in history will stay untouched.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep Scanning</AlertDialogCancel>
-            <AlertDialogAction onClick={cancelScan}>Cancel Scan</AlertDialogAction>
+            <AlertDialogCancel>Keep Checking</AlertDialogCancel>
+            <AlertDialogAction onClick={cancelScan}>Cancel Check</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

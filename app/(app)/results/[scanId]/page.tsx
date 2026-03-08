@@ -98,7 +98,9 @@ export default function ResultsPage({
       </div>
 
       <SurfaceCard className="p-6">
-        <p className="mb-4 text-center text-sm font-medium text-muted-foreground">Home WiFi Score</p>
+        <p className="mb-4 text-center text-sm font-medium text-muted-foreground">
+          Estimated Home WiFi Score
+        </p>
         <div className="flex flex-col items-center gap-4">
           <ProgressRing
             value={scan.homeScore}
@@ -129,6 +131,11 @@ export default function ResultsPage({
           </p>
         </div>
       </SurfaceCard>
+
+      <InlineAlert variant="info">
+        This web result is an estimate based on browser speed tests in each room, not a direct
+        Wi-Fi signal scan from your device hardware.
+      </InlineAlert>
 
       {previousScan ? (
         <InlineAlert variant={scoreDelta && scoreDelta < 0 ? "warning" : "info"}>
@@ -163,7 +170,7 @@ export default function ResultsPage({
       <SurfaceCard className="p-5">
         <SectionHeader
           title="Room Coverage"
-          subtitle="Tap a room to see its latest reading and trend."
+          subtitle="Tap a room to see its latest estimated reading and trend."
           className="mb-4"
         />
         <div className="space-y-3">
@@ -229,7 +236,7 @@ export default function ResultsPage({
       <SurfaceCard className="p-5">
         <SectionHeader
           title="What to Do Next"
-          subtitle="Rules-based recommendations based on this scan."
+          subtitle="Rules-based recommendations based on this estimated room check."
           className="mb-4"
         />
         <div className="space-y-3">
@@ -256,7 +263,7 @@ export default function ResultsPage({
         <Button asChild className="w-full min-h-[52px] font-semibold">
           <Link href="/scan">
             <RefreshCw className="mr-2 h-4 w-4" />
-            Re-scan
+            Re-check
           </Link>
         </Button>
         <Button

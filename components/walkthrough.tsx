@@ -51,7 +51,7 @@ export const APP_WALKTHROUGH_STEPS: WalkthroughStep[] = [
   {
     id: "scan-tab",
     title: "Run a Scan",
-    description: "Tap here to scan your rooms. Walk to each room and the app will test your WiFi signal strength.",
+    description: "Tap here to run room checks. Walk to each room and the web app will estimate WiFi quality from browser tests.",
     targetSelector: "[data-walkthrough='scan-tab']",
     position: "top",
     route: "/",

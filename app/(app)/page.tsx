@@ -270,10 +270,10 @@ export default function HomePage() {
       <SurfaceCard className="p-5">
         <div className="flex items-start justify-between gap-4">
           <SectionHeader
-            title="Ready to Scan"
+            title="Ready for a Room Check"
             subtitle={
               rooms.length > 0
-                ? `${rooms.length} room${rooms.length === 1 ? "" : "s"} configured for guided scanning.`
+                ? `${rooms.length} room${rooms.length === 1 ? "" : "s"} configured for guided room checks.`
                 : "Add your rooms first so WiFi Coach can guide you room by room."
             }
           />
@@ -319,7 +319,7 @@ export default function HomePage() {
             className="w-full min-h-[52px] rounded-2xl text-base font-semibold"
           >
             <Link href={rooms.length > 0 ? "/scan" : "/rooms"}>
-              {rooms.length > 0 ? "Start Scan" : "Add Rooms"}
+              {rooms.length > 0 ? "Start Room Check" : "Add Rooms"}
             </Link>
           </Button>
         </div>

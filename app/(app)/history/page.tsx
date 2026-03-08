@@ -38,12 +38,12 @@ export default function HistoryPage() {
         <EmptyState
           icon={Clock3}
           title="No scans yet"
-          description="Run your first room-by-room scan to start tracking your WiFi."
+          description="Run your first room-by-room check to start tracking your WiFi."
           action={
             <Button asChild className="min-h-[48px] font-semibold">
               <Link href="/scan">
                 <Scan className="mr-2 h-4 w-4" />
-                Start Scan
+                Start Room Check
               </Link>
             </Button>
           }

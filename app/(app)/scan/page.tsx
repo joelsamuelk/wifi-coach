@@ -117,12 +117,12 @@ function ScanSetupContent() {
     <div className="flex flex-col gap-6 pb-1">
       <div className="pt-1 text-center">
         <h1 className="text-[30px] font-bold tracking-tight text-foreground">
-          {singleRoomId ? "Re-scan Room" : "Start a Scan"}
+          {singleRoomId ? "Re-check Room" : "Start a Room Check"}
         </h1>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           {singleRoomId
-            ? "Run a fresh room check with your saved scan settings."
-            : "Choose your network, scan mode, and rooms to test."}
+            ? "Run a fresh estimated room check with your saved settings."
+            : "Choose your network, check mode, and rooms to estimate from this web app."}
         </p>
       </div>
 
@@ -223,22 +223,22 @@ function ScanSetupContent() {
 
       <div>
         <SectionHeader
-          title="Scan Mode"
-          subtitle="Choose between a quick check or a deeper room-by-room reading."
+          title="Check Mode"
+          subtitle="Choose between a quick estimate or a deeper room-by-room estimate."
           className="mb-3"
         />
         <div className="flex gap-3">
           <ModeCard
             active={mode === "Quick"}
             title="Quick"
-            subtitle="1 sample per room"
+            subtitle="1 browser sample per room"
             icon={Zap}
             onClick={() => setMode("Quick")}
           />
           <ModeCard
             active={mode === "Deep"}
             title="Deep"
-            subtitle="3 samples per room"
+            subtitle="3 browser samples per room"
             icon={Search}
             onClick={() => setMode("Deep")}
           />
@@ -315,7 +315,7 @@ function ScanSetupContent() {
 
       {selectedRoomIds.length === 0 ? (
         <InlineAlert variant="warning">
-          Select at least one room before starting the scan.
+          Select at least one room before starting the room check.
         </InlineAlert>
       ) : null}
 
@@ -327,7 +327,7 @@ function ScanSetupContent() {
             className="w-full min-h-[56px] text-base font-semibold"
           >
             <Scan className="mr-2 h-5 w-5" />
-            Start {mode} Scan
+            Start {mode} Room Check
           </Button>
         </div>
       </div>

@@ -84,12 +84,12 @@ export default function RoomDetailPage({
         <EmptyState
           icon={RefreshCw}
           title="No scan history yet"
-          description="Scan this room to see its latest score and trend."
+          description="Run a room check here to see its latest estimated score and trend."
           action={
             <Button asChild className="min-h-[48px] font-semibold">
               <Link href={`/scan?roomId=${room.id}`}>
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Re-scan This Room
+                Re-check This Room
               </Link>
             </Button>
           }
@@ -235,7 +235,7 @@ export default function RoomDetailPage({
       <Button asChild className="w-full min-h-[52px] font-semibold">
         <Link href={`/scan?roomId=${room.id}`}>
           <RefreshCw className="mr-2 h-4 w-4" />
-          Re-scan This Room
+          Re-check This Room
         </Link>
       </Button>
     </div>
